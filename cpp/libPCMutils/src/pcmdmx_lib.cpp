@@ -2393,16 +2393,24 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       int nContentCh = 0; /* Number of channels with content */
       int nEmptyCh = 0;   /* Number of channels with content */
       int ch, chGrp, isCompatible = 1;
+      /* A mono input is duplicated into an L/R pair during the first stage, so
+       * by the time we reach this stage two labelled channels carry signal.
+       * The signalling must therefore cover both copies; otherwise the
+       * duplicated channel keeps its samples but loses its type/index and
+       * would be misreported as ACT_NONE. */
+      int numSignallingChannels =
+          (numInChannels == ONE_CHANNEL) ? TWO_CHANNEL : numInChannels;
 
       /* Do not change the signalling which is the channel types and indices.
          Just reorder and add channels. So first save the input signalling. */
       FDKmemcpy(inChTypes, channelType,
-                numInChannels * sizeof(AUDIO_CHANNEL_TYPE));
-      FDKmemclear(inChTypes + numInChannels,
-                  ((8) - numInChannels) * sizeof(AUDIO_CHANNEL_TYPE));
-      FDKmemcpy(inChIndices, channelIndices, numInChannels * sizeof(UCHAR));
-      FDKmemclear(inChIndices + numInChannels,
-                  ((8) - numInChannels) * sizeof(UCHAR));
+                numSignallingChannels * sizeof(AUDIO_CHANNEL_TYPE));
+      FDKmemclear(inChTypes + numSignallingChannels,
+                  ((8) - numSignallingChannels) * sizeof(AUDIO_CHANNEL_TYPE));
+      FDKmemcpy(inChIndices, channelIndices,
+                numSignallingChannels * sizeof(UCHAR));
+      FDKmemclear(inChIndices + numSignallingChannels,
+                  ((8) - numSignallingChannels) * sizeof(UCHAR));
 
       /* Set this stages output stride and channel mode: */
       outStride = (fInterleaved) ? numOutChannels : 1;

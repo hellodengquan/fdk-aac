@@ -45,6 +45,9 @@ endif()
 
 project(fdk-aac VERSION 3.0.0)
 
+# CTest support. The actual test target is registered under BUILD_PROGRAMS.
+enable_testing()
+
 # Includes
 
 include(CheckSymbolExists)
@@ -1017,4 +1020,17 @@ if(BUILD_PROGRAMS)
 
   add_executable(test-encode-decode ${test_encode_decode_SOURCES})
   target_link_libraries(test-encode-decode PRIVATE fdk-aac)
+
+  ## Multichannel downmix / channel mapping unit tests.
+  ## Uses internal PCM downmix and channel map descriptor headers, hence the
+  ## private include directories below.
+  add_executable(test-multichannel-downmix test-multichannel-downmix.cpp)
+  target_link_libraries(test-multichannel-downmix PRIVATE fdk-aac)
+  target_include_directories(test-multichannel-downmix PRIVATE
+    cpp
+    cpp/libPCMutils/include
+    cpp/libFDK/include
+    cpp/libMpegTPDec/include)
+  add_test(NAME multichannel-downmix
+           COMMAND test-multichannel-downmix)
 endif()

@@ -86,7 +86,11 @@ libfdk_xhe_aac_la_LDFLAGS = -version-info @FDK_XHE_AAC_VERSION@ -no-undefined \
 
 if EXAMPLE
 bin_PROGRAMS = aac-enc$(EXEEXT) aac-dec$(EXEEXT) xhe-aac-enc$(EXEEXT)
-noinst_PROGRAMS = test-encode-decode$(EXEEXT)
+noinst_PROGRAMS = test-encode-decode$(EXEEXT) \
+                  test-multichannel-downmix$(EXEEXT)
+
+# Run the multichannel downmix unit tests on "make check".
+TESTS = test-multichannel-downmix$(EXEEXT)
 
 aac_enc_LDADD = libfdk-aac.la
 aac_enc_CPPFLAGS = $(libfdk_aac_la_CPPFLAGS) -I$(top_srcdir)/cpp
@@ -103,6 +107,10 @@ xhe_aac_enc_SOURCES = xhe-aac-enc.c wavreader.c
 test_encode_decode_LDADD = libfdk-aac.la
 test_encode_decode_CPPFLAGS = $(libfdk_aac_la_CPPFLAGS)
 test_encode_decode_SOURCES = test-encode-decode.c wavreader.c sha1.c
+
+test_multichannel_downmix_LDADD = libfdk-aac.la
+test_multichannel_downmix_CPPFLAGS = $(libfdk_aac_la_CPPFLAGS)
+test_multichannel_downmix_SOURCES = test-multichannel-downmix.cpp
 
 noinst_HEADERS = wavreader.h wavwriter.h
 endif

@@ -1017,4 +1017,8 @@ if(BUILD_PROGRAMS)
 
   add_executable(test-encode-decode ${test_encode_decode_SOURCES})
   target_link_libraries(test-encode-decode PRIVATE fdk-aac)
+
+  ## Integration test for the encoder end-of-stream / flush path
+  add_executable(test-eos-flush test-eos-flush.c)
+  target_link_libraries(test-eos-flush PRIVATE fdk-aac m)
 endif()

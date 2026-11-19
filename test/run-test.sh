@@ -3,6 +3,10 @@
 set -e
 set -o pipefail
 
+# Self-contained decoder concealment / lost frame recovery test. It generates
+# its own signal and encodes it with this library, so it needs no downloads.
+./test-conceal
+
 if [ ! -f Sample01_4.wav ]; then
 	curl -LO https://media.xiph.org/audio/HA_2011/Sample01_4.wav
 fi

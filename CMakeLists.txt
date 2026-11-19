@@ -1017,4 +1017,8 @@ if(BUILD_PROGRAMS)
 
   add_executable(test-encode-decode ${test_encode_decode_SOURCES})
   target_link_libraries(test-encode-decode PRIVATE fdk-aac)
+
+  ## Integration test for decoder error concealment / lost frame recovery
+  add_executable(test-conceal test-conceal.c)
+  target_link_libraries(test-conceal PRIVATE fdk-aac)
 endif()
